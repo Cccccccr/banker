@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta author="Atlue" content="Vabc">
+    <title>银行家算法</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div id="title">银行家算法</div>
+    <div id="resource">
+        <div class="container-fluid">
+            <div class="row">
+                <button type="button" v-on:click="allDefalut" class="btn btn-secondary btn-lg top-margin-10px text-center">一键默认</button>
+            </div>
+            <div style="font-size: 25px;">资源管理</div>
+            <div class="row top-margin-10px">
+                <div class="col-2">
+                    <input type="number" id="souNum"  class="form-control  text-center center-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg" placeholder="输入资源种类数目(小于5)">
+                </div>
+                <div class="col-1 text-center">
+                    <button type="button" v-on:click="souNumBtn" class="btn btn-success text-center">确认</button>
+                </div>
+                <div class="col-2 text-center">
+                    <button type="button" v-on:click="souNumDefBtn" class="btn btn-success text-center">添加默认值</button>
+                </div>
+                <div class="col-4 text-center">
+                    <div id="soutext" class="set-fontsize-20px center-control">资源种类：{{resourceNumber}}</div>
+                </div>
+                <div class="col-3 text-center"></div>
+            </div> 
+        </div>
+        <div class="container-fluid top-margin-10px">
+            <div class="row">
+                <div class="col" v-for="item in resourceList">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">资源{{item.name}}数目</span>
+                        </div>
+                        <input type="number" class="resourceList" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div> 
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-2">
+                    <button type="button" v-on:click="resourceListBtn" v-if="show" class="btn btn-success text-center">确认</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" v-on:click="resourceListDefBtn" v-if="show" class="btn btn-success text-center">添加默认值</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div style="font-size: 20px;" class="top-margin-10px">资源总量</div>
+            <div class="row top-margin-10px set-fontsize-20px">
+                <div class="col border" v-for="item in resourceList">
+                    <div class="text-center">资源{{item.name}}</div>
+                </div>
+            </div>
+            <div class="row set-fontsize-20px">
+                <div class="col border" v-for="item in resourceList">
+                    <div class="text-center">{{item.number}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid top-margin-10px">
+            <div style="font-size: 25px;" class="text-center">作业管理</div>
+            <div class="top-margin-10px" style="font-size: 20px;">新增作业</div>
+            <div class="row top-margin-10px">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">作业名</span>
+                        </div>
+                        <input type="text" class="projectList" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col" v-for="item in resourceList">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">所需资源{{item.name}}</span>
+                        </div>
+                        <input type="number" class="projectList" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+            </div>
+            <div class="row top-margin-10px">
+                <div class="col-4"></div>
+                <div class="col-2">
+                    <button type="button" v-on:click="projectListBtn" v-if="show" class="btn btn-success text-center">确认</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" v-on:click="projectListDefBtn" v-if="show" class="btn btn-success text-center">添加默认值</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div style="font-size: 20px;">删除作业</div>
+            <div class="row top-margin-10px">
+                <div class="col-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text" id="basic-addon1">作业名</span>
+                        </div>
+                        <input type="text" class="deleteProject" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button type="button" v-on:click="deleteProjectBtn" v-if="show" class="btn btn-success">确认</button>
+                </div>
+                <div class="col-6"></div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div style="font-size: 20px;">作业信息</div>
+            <div class="row top-margin-10px">
+                <div class="col set-fontsize-20px border">作业名</div>
+                <div class="col set-fontsize-20px border">需要资源数目</div>
+                <div class="col set-fontsize-20px border">分配资源数目</div>
+                <div class="col set-fontsize-20px border">仍需资源数目</div>
+            </div>
+            <div class="row set-fontsize-20px" v-for="item in projectList">
+                <div class="col border">{{item.name}}</div>
+                <div class="col border">{{item.max}}</div>
+                <div class="col border">{{item.allocation}}</div>
+                <div class="col border">{{item.need}}</div>
+            </div>
+            <div style="font-size: 20px;" class="top-margin-10px">已分配资源数</div>
+            <div class="row top-margin-10px set-fontsize-20px">
+                <div class="col border" v-for="item in resourceList">
+                    <div class="text-center">资源{{item.name}}</div>
+                </div>
+            </div>
+            <div class="row set-fontsize-20px">
+                <div class="col border" v-for="item in allocationList">
+                    <div class="text-center">{{item}}</div>
+                </div>
+            </div>
+            <div style="font-size: 20px;" class="top-margin-10px">剩余资源数</div>
+            <div class="row top-margin-10px set-fontsize-20px">
+                <div class="col border" v-for="item in resourceList">
+                    <div class="text-center">资源{{item.name}}</div>
+                </div>
+            </div>
+            <div class="row set-fontsize-20px">
+                <div class="col border" v-for="item in remainRes">
+                    <div class="text-center">{{item}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid top-margin-10px">
+            <div style="font-size: 20px;" class="top-margin-10px">作业申请资源数</div>
+            <div class="row">
+                    <div class="col" v-if="show">
+                        <div class="set-fontsize-20px text-center center-control">
+                            <span class="text-center center-control" style="float: left;">选择作业：</span>
+                            <select class="applyName text-center center-control set-fontsize-20px">
+                                <option v-for="item in projectList">{{item.name}}</option>
+                            </select>
+                        </div>    
+                    </div>
+                    <div class="col" v-for="item in resourceList">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">所需资源{{item.name}}</span>
+                            </div>
+                            <input type="number" class="applyList" class="form-control" placeholder="" aria-label="Username" aria-describedby="basic-addon1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4"></div>
+                <div class="col-2">
+                    <button type="button" v-on:click="applyDataBtn" v-if="show" class="btn btn-success text-center">确认</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" v-on:click="applyDataRandomBtn" v-if="show" class="btn btn-success text-center">随机申请</button>
+                </div>
+                <div class="col-4"></div>
+            </div>
+            <div style="font-size: 20px;" class="top-margin-10px">申请详情</div>
+            <div class="row set-fontsize-20px">
+                <div class="col-2 text-center border">作业名</div>
+                <div class="col-2 border">申请资源数</div>
+                <div class="col-2 border">申请结果</div>
+                <div class="col-4 border">路径展示</div>
+                <div class="col-2"></div>
+            </div>
+            <div class="row set-fontsize-20px" v-for="item in applyData">
+                <div class="col-2 border">{{item.name}}</div>
+                <div class="col-2 border">{{item.applyList}}</div>
+                <div class="col-2 border">{{item.result}}</div>
+                <div class="col-4 border">{{item.road}}</div>
+                <div class="col-2"></div>
+            </div>
+            <div class="container-fluid">
+                <div style="font-size: 20px;" class="top-margin-10px">路径详情</div>
+                <div class="row set-fontsize-20px">
+                    <div class="col border">作业名</div>
+                    <div class="col border">剩余资源量</div>
+                    <div class="col border">所需资源</div>
+                    <div class="col border">释放资源量</div>
+                </div>
+                <div class="row set-fontsize-20px" v-for="item in road">
+                    <div class="col border">{{item.name}}</div>
+                    <div class="col border">{{item.roaddetail}}</div>
+                    <div class="col border">{{item.need}}</div>
+                    <div class="col border">{{item.allocation}}</div>
+                </div>
+            </div>
+        </div>
+        <!-- <input type="number" id="souNum" placeholder="请输入<=4的资源种类数"/>
+        <button v-on:click="souNumBtn">确定</button>
+        <button v-on:click="souNumDefBtn">添加默认值</button>
+        <div id="soutext">资源种类：{{resourceNumber}}</div>
+        <div v-for="item in resourceList">
+            <div>请输入资源{{item.name}}数目：</div>
+            <input type="number" class="resourceList" />
+        </div>
+        <button v-on:click="resourceListBtn" v-if="show">确定</button>
+        <button v-on:click="resourceListDefBtn" v-if="show">添加默认值</button>
+        <div v-for="item in resourceList">
+            <div>资源{{item.name}}数目:{{item.number}}</div>
+        </div>
+        <div v-if="show">
+            <div>创建project</div>
+            <div>请输入project名字：</div>
+            <input type="text" class="projectList" />
+            <div v-for="item in resourceList">
+                <div>请输入所需资源{{item.name}}数目：</div>
+                <input type="number" class="projectList" />
+            </div>
+            <button v-on:click="projectListBtn">确定</button>
+            <button v-on:click="projectListDefBtn">添加默认值</button>
+        </div>
+        <div v-if="show">
+            <div>删除project</div>
+            <div>请输入project名字：</div>
+            <input type="text" class="deleteProject" />
+            <button v-on:click="deleteProjectBtn">确定</button>
+        </div>
+        <div v-if="show">project信息：</div>
+        <div v-for="item in projectList">
+            <div>project名字：{{item.name}}  需要资源数目：{{item.max}}  所分配资源数目：{{item.allocation}}  仍需资源数：{{item.need}}</div>
+        </div>
+        <div v-if="show">
+            <div>
+                <div v-for="item in resourceList">
+                    <div>资源{{item.name}}数目:{{item.number}}</div>
+                </div>
+                剩余资源数：{{remainRes}}  
+                已分配资源：{{allocationList}}
+            </div>
+            <div>请输入要申请资源的project的名字：</div>
+            <select class="applyName">
+                <option v-for="item in projectList">{{item.name}}</option>
+            </select>
+            <div v-for="item in resourceList">
+                <div>请输入申请资源{{item.name}}数目：</div>
+                <input type="number" class="applyList" />
+            </div>
+            <button v-on:click="applyDataBtn">确定</button>
+            <button v-on:click="applyDataRandomBtn">随机申请</button>
+            <div v-if="applyData.name != null">
+                project {{applyData.name}}申请资源：{{applyData.applyList}};
+            </div>
+        </div> -->
+    </div>
+
+    <div></div>
+ 
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>
